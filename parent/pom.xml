@@ -26,6 +26,11 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
+
+        <hibernate-validator.version>5.2.2.Final</hibernate-validator.version>
+        <spring-cloud-starter-consul.version>1.0.0.RC2</spring-cloud-starter-consul.version>
+        <rxjava.version>1.1.5</rxjava.version>
+        <jackson.ver>2.5.2</jackson.ver>
     </properties>
 
     <dependencyManagement>
@@ -49,7 +54,7 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-consul</artifactId>
-                <version>1.0.0.RC2</version>
+                <version>${spring-cloud-starter-consul.version}</version>
             </dependency>
 
             <dependency>
@@ -61,13 +66,27 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-consul-all</artifactId>
-                <version>1.0.0.RC2</version>
+                <version>${spring-cloud-starter-consul.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>io.reactivex</groupId>
                 <artifactId>rxjava</artifactId>
-                <version>1.1.5</version>
+                <version>${rxjava.version}</version>
+            </dependency>
+
+            <!-- Validator -->
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${hibernate-validator.version}</version>
+            </dependency>
+
+            <!-- JSON -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.ver}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
