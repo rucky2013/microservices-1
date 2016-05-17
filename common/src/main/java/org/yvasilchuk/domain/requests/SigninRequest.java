@@ -9,7 +9,7 @@ import org.yvasilchuk.domain.model.util.PlatformInfo;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
-public class LoginRequest implements Serializable {
+public class SigninRequest implements Serializable {
     private static final long serialVersionUID = 4897920045509683722L;
 
     @NotNull(message = ValidationMessages.PLATFORM_INFO_REQUIRED)
@@ -19,7 +19,7 @@ public class LoginRequest implements Serializable {
     private TwitterCredentials twitterCredentials;
     private WebCredentials webCredentials;
 
-    public LoginRequest() {
+    public SigninRequest() {
     }
 
     public PlatformInfo getPlatformInfo() {

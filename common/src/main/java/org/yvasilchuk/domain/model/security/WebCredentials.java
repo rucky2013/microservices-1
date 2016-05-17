@@ -9,19 +9,19 @@ public class WebCredentials implements Serializable {
     private static final long serialVersionUID = -4271354488671807915L;
 
     @NotNull(message = ValidationMessages.LOGIN_REQUIRED)
-    private String email;
+    private String username;
     @NotNull(message = ValidationMessages.PASSWORD_REQUIRED)
     private String password;
 
     public WebCredentials() {
     }
 
-    public String getEmail() {
-        return email;
+    public String getUsername() {
+        return username;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {

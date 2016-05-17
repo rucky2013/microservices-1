@@ -1,13 +1,29 @@
 package org.yvasilchuk.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.yvasilchuk.domain.FatGrantedAuthority;
+import org.yvasilchuk.domain.enums.Role;
+import org.yvasilchuk.domain.model.security.WebRegistrationDetails;
+
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
-public class User extends AbstractEntity {
+public class User extends AbstractEntity implements UserDetails {
+    private static final long serialVersionUID = -6017856258023877410L;
+
     @Column(name = "username", nullable = false, unique = true, length = 512)
     private String username;
+
+    @ElementCollection
+    @CollectionTable(name = "users_roles", joinColumns = @JoinColumn(name = "id"))
+    private List<Role> roles;
 
     @Column(name = "email", nullable = false, unique = true, length = 512)
     private String email;
@@ -30,12 +46,51 @@ public class User extends AbstractEntity {
     public User() {
     }
 
+    public User(WebRegistrationDetails webDetails) {
+        this.username = webDetails.getName();
+        this.email = webDetails.getEmail();
+        this.password = webDetails.getPassword();
+        if (this.roles == null) {
+            this.roles = new ArrayList<>();
+        }
+        this.roles.add(Role.ROLE_USER);
+    }
+
+    @Override
     public String getUsername() {
         return username;
     }
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 
     public String getEmail() {
@@ -46,6 +101,20 @@ public class User extends AbstractEntity {
         this.email = email;
     }
 
+    @Override
+    @JsonIgnore
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (roles.isEmpty()) {
+            return new ArrayList<FatGrantedAuthority>();
+        }
+        return roles
+                .stream()
+                .sorted((o1, o2) -> o1.name().compareTo(o2.name()))
+                .map(FatGrantedAuthority::new)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public String getPassword() {
         return password;
     }

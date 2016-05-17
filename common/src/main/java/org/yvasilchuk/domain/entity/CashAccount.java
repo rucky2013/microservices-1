@@ -1,5 +1,6 @@
 package org.yvasilchuk.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.yvasilchuk.domain.enums.Currency;
 
 import javax.persistence.*;
@@ -13,12 +14,13 @@ public class CashAccount extends AbstractEntity {
     @Column(name = "name")
     private String name;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     @Column(name = "currency")
     private Currency currency;
 
     @ManyToOne
     @JoinColumn(name = "owner", nullable = false)
+    @JsonIgnore
     private User owner;
 
     public Long getBalance() {
