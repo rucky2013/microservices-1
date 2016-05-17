@@ -9,6 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.yvasilchuk.domain.entity.User;
@@ -23,8 +26,11 @@ import org.yvasilchuk.exceptions.InternalServerException;
 import org.yvasilchuk.service.UserService;
 import org.yvasilchuk.services.DiscoveryService;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service("SERVER_USER_SERVICE")
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
     @Autowired
     DiscoveryService discoveryService;
 
@@ -114,5 +120,26 @@ public class UserServiceImpl implements UserService {
 
         user = dbResponse.getBody().getResponse();
         return user;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        RestTemplate template = new RestTemplate();
+        Map<String, String> params = new HashMap<>();
+        params.put("name", username);
+        String route = discoveryService.getDbServerUrl() + "/api/user/";
+        ResponseEntity<BaseResponse<User>> dbResponse = template.exchange(
+                route,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<BaseResponse<User>>() {
+                },
+                params);
+
+        if (!dbResponse.getStatusCode().is2xxSuccessful()) {
+            throw new UsernameNotFoundException(ErrorMessages.AUTHENTICATION_EXCEPTION);
+        }
+
+        return dbResponse.getBody().getResponse();
     }
 }
