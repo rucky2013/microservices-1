@@ -154,4 +154,16 @@ public class User extends AbstractEntity implements UserDetails {
     public void setAccounts(List<CashAccount> accounts) {
         this.accounts = accounts;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                ", roles=" + roles +
+                ", email='" + email + '\'' +
+                ", facebookId='" + facebookId + '\'' +
+                ", twitterId='" + twitterId + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }

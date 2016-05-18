@@ -1,4 +1,4 @@
-package org.yvasilchuk.domain.model;
+package org.yvasilchuk.domain.model.user;
 
 import org.yvasilchuk.domain.entity.User;
 

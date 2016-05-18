@@ -15,4 +15,6 @@ public interface ErrorMessages {
     String SIGNUP_INVALID_REGISTRATION_TYPE = "Unsupported registration type.";
     String INVALID_REQUEST = "Invalid request data.";
     String UNKNOWN_PLATFORM_TYPE = "Unknown platform type.";
+    String UNSUPPORTED_CASH_OPERATION = "Cash operation type not supported.";
+    String ACCESS_DENIED = "Access denied.";
 }

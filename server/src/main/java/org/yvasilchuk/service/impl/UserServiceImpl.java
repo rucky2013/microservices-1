@@ -10,14 +10,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.yvasilchuk.domain.entity.User;
 import org.yvasilchuk.domain.messages.ErrorMessages;
-import org.yvasilchuk.domain.model.UserProfile;
 import org.yvasilchuk.domain.model.enums.RegistrationType;
+import org.yvasilchuk.domain.model.user.UserAccount;
+import org.yvasilchuk.domain.model.user.UserProfile;
 import org.yvasilchuk.domain.requests.RegistrationRequest;
 import org.yvasilchuk.domain.requests.SigninRequest;
 import org.yvasilchuk.domain.response.BaseResponse;
@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service("SERVER_USER_SERVICE")
-public class UserServiceImpl implements UserService, UserDetailsService {
+public class UserServiceImpl implements UserService {
     @Autowired
     DiscoveryService discoveryService;
 
@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserProfile signin(SigninRequest request) {
+    public UserAccount signin(SigninRequest request) {
         User user = signinInDatabase(request);
 
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
@@ -63,7 +63,39 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         securityContext.setAuthentication(authenticationToken);
         SecurityContextHolder.setContext(securityContext);
 
-        return new UserProfile(user);
+        return new UserAccount(user);
+    }
+
+    @Override
+    public User getLoggedInUser() {
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        System.out.println("loadUserByUsername executed");
+
+        RestTemplate template = new RestTemplate();
+        Map<String, String> params = new HashMap<>();
+        params.put("name", username);
+        String route = discoveryService.getDbServerUrl() + "/api/user/";
+        ResponseEntity<BaseResponse<User>> dbResponse = template.exchange(
+                route,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<BaseResponse<User>>() {
+                },
+                params);
+
+        if (!dbResponse.getStatusCode().is2xxSuccessful()) {
+            throw new UsernameNotFoundException(ErrorMessages.AUTHENTICATION_EXCEPTION);
+        }
+
+        User user = dbResponse.getBody().getResponse();
+
+        System.out.println("Returns: " + user);
+
+        return user;
     }
 
     private User signinInDatabase(SigninRequest request) {
@@ -120,26 +152,5 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         user = dbResponse.getBody().getResponse();
         return user;
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        RestTemplate template = new RestTemplate();
-        Map<String, String> params = new HashMap<>();
-        params.put("name", username);
-        String route = discoveryService.getDbServerUrl() + "/api/user/";
-        ResponseEntity<BaseResponse<User>> dbResponse = template.exchange(
-                route,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<BaseResponse<User>>() {
-                },
-                params);
-
-        if (!dbResponse.getStatusCode().is2xxSuccessful()) {
-            throw new UsernameNotFoundException(ErrorMessages.AUTHENTICATION_EXCEPTION);
-        }
-
-        return dbResponse.getBody().getResponse();
     }
 }

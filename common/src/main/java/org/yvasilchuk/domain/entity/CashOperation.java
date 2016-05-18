@@ -14,8 +14,8 @@ public abstract class CashOperation extends AbstractEntity {
     private User owner;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cash_account_id", nullable = false)
-    private CashAccount cashAccount;
+    @JoinColumn(name = "sender_account_id", nullable = false)
+    private CashAccount senderAccount;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
@@ -36,12 +36,12 @@ public abstract class CashOperation extends AbstractEntity {
         this.owner = owner;
     }
 
-    public CashAccount getCashAccount() {
-        return cashAccount;
+    public CashAccount getSenderAccount() {
+        return senderAccount;
     }
 
-    public void setCashAccount(CashAccount cashAccount) {
-        this.cashAccount = cashAccount;
+    public void setSenderAccount(CashAccount senderAccount) {
+        this.senderAccount = senderAccount;
     }
 
     public OperationType getType() {
