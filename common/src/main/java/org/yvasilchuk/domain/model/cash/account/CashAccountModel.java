@@ -8,6 +8,7 @@ import java.io.Serializable;
 public class CashAccountModel implements Serializable {
     private static final long serialVersionUID = -4508018399018354870L;
 
+    private Integer id;
     private Long balance;
     private String name;
     private Currency currency;
@@ -17,10 +18,29 @@ public class CashAccountModel implements Serializable {
     }
 
     public CashAccountModel(CashAccount ca) {
+        this.id = ca.getId();
         this.balance = ca.getBalance();
         this.name = ca.getName();
         this.currency = ca.getCurrency();
-        this.ownerId = ca.getOwner().getId();
+        if (ca.getOwner() != null) {
+            this.ownerId = ca.getOwner().getId();
+        }
+    }
+
+    public CashAccountModel(CashAccount ca, Integer ownerId) {
+        this.id = ca.getId();
+        this.balance = ca.getBalance();
+        this.name = ca.getName();
+        this.currency = ca.getCurrency();
+        this.ownerId = ownerId;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Long getBalance() {

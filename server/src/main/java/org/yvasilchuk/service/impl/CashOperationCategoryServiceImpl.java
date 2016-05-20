@@ -5,13 +5,11 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.yvasilchuk.domain.entity.CashOperationCategory;
 import org.yvasilchuk.domain.messages.ErrorMessages;
-import org.yvasilchuk.domain.response.BaseResponse;
-import org.yvasilchuk.exceptions.DatabaseException;
-import org.yvasilchuk.exceptions.InternalServerException;
 import org.yvasilchuk.service.CashOperationCategoryService;
 import org.yvasilchuk.services.DiscoveryService;
 
@@ -22,26 +20,22 @@ public class CashOperationCategoryServiceImpl implements CashOperationCategorySe
 
     @Override
     public CashOperationCategory getById(Integer categoryId) {
-        String route = discoveryService.getDbServerUrl() + "/api/category/" + categoryId;
+        String route = discoveryService.getDbServerUrl() + "/api/data/category/" + categoryId;
 
         RestTemplate template = new RestTemplate();
-        ResponseEntity<BaseResponse<CashOperationCategory>> dbResponse = template.exchange(
+        ResponseEntity<CashOperationCategory> dbResponse = template.exchange(
                 route,
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<BaseResponse<CashOperationCategory>>() {
+                new ParameterizedTypeReference<CashOperationCategory>() {
                 }
         );
 
         HttpStatus dbResponseStatusCode = dbResponse.getStatusCode();
-        if (!dbResponseStatusCode.is2xxSuccessful()) {
-            if (dbResponseStatusCode.is4xxClientError()) {
-                throw new DatabaseException(dbResponse.getBody().getErrorMessage());
-            } else {
-                throw new InternalServerException(ErrorMessages.DB_INTERNAL_ERROR);
-            }
+        if (!dbResponse.getStatusCode().is2xxSuccessful()) {
+            throw new UsernameNotFoundException(ErrorMessages.DB_INTERNAL_ERROR);
         }
 
-        return dbResponse.getBody().getResponse();
+        return dbResponse.getBody();
     }
 }

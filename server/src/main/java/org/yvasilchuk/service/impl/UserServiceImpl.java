@@ -73,12 +73,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println("loadUserByUsername executed");
-
         RestTemplate template = new RestTemplate();
+
         Map<String, String> params = new HashMap<>();
-        params.put("name", username);
-        String route = discoveryService.getDbServerUrl() + "/api/user/";
+        params.put("username", username);
+
+        String route = discoveryService.getDbServerUrl() + "/api/data/user/search/findByUsername";
+
         ResponseEntity<BaseResponse<User>> dbResponse = template.exchange(
                 route,
                 HttpMethod.GET,
@@ -92,8 +93,6 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = dbResponse.getBody().getResponse();
-
-        System.out.println("Returns: " + user);
 
         return user;
     }

@@ -17,4 +17,5 @@ public interface ErrorMessages {
     String UNKNOWN_PLATFORM_TYPE = "Unknown platform type.";
     String UNSUPPORTED_CASH_OPERATION = "Cash operation type not supported.";
     String ACCESS_DENIED = "Access denied.";
+    String USER_NOT_FOUND = "User not found.";
 }

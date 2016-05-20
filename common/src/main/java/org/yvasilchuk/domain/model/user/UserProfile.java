@@ -7,6 +7,7 @@ import java.io.Serializable;
 public class UserProfile implements Serializable {
     private static final long serialVersionUID = 7703578114170677802L;
 
+    private Integer id;
     private String email;
     private String username;
     private String facebookId;
@@ -16,10 +17,19 @@ public class UserProfile implements Serializable {
     }
 
     public UserProfile(User u) {
+        this.id = u.getId();
         this.email = u.getEmail();
         this.username = u.getUsername();
         this.twitterId = u.getTwitterId();
         this.facebookId = u.getFacebookId();
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getEmail() {

@@ -8,6 +8,7 @@ import java.io.Serializable;
 public class CashOperationCategoryModel implements Serializable {
     private static final long serialVersionUID = -4149079196615555494L;
 
+    private Integer id;
     private String name;
     private Integer ownerId;
     private CashOperationCategoryType type;
@@ -16,9 +17,27 @@ public class CashOperationCategoryModel implements Serializable {
     }
 
     public CashOperationCategoryModel(CashOperationCategory c) {
+        this.id = c.getId();
         this.name = c.getName();
-        this.ownerId = c.getOwner().getId();
+        if (c.getOwner() != null) {
+            this.ownerId = c.getOwner().getId();
+        }
         this.type = c.getType();
+    }
+
+    public CashOperationCategoryModel(CashOperationCategory c, Integer ownerId) {
+        this.id = c.getId();
+        this.name = c.getName();
+        this.ownerId = ownerId;
+        this.type = c.getType();
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getName() {

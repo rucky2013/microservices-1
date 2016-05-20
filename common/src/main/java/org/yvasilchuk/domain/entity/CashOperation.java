@@ -28,6 +28,9 @@ public abstract class CashOperation extends AbstractEntity {
     @Column(name = "amount", nullable = false)
     private Double amount;
 
+    public CashOperation() {
+    }
+
     public User getOwner() {
         return owner;
     }

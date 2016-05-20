@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.yvasilchuk.domain.entity.CashAccount;
 import org.yvasilchuk.domain.messages.ErrorMessages;
-import org.yvasilchuk.domain.response.BaseResponse;
 import org.yvasilchuk.service.CashAccountService;
 import org.yvasilchuk.services.DiscoveryService;
 
@@ -21,18 +20,18 @@ public class CashAccountServiceImpl implements CashAccountService {
     @Override
     public CashAccount getById(Integer accountId) {
         RestTemplate template = new RestTemplate();
-        String route = discoveryService.getDbServerUrl() + "/api/accounts/" + accountId;
-        ResponseEntity<BaseResponse<CashAccount>> dbResponse = template.exchange(
+        String route = discoveryService.getDbServerUrl() + "/api/data/account/" + accountId;
+        ResponseEntity<CashAccount> dbResponse = template.exchange(
                 route,
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<BaseResponse<CashAccount>>() {
+                new ParameterizedTypeReference<CashAccount>() {
                 });
 
         if (!dbResponse.getStatusCode().is2xxSuccessful()) {
-            throw new UsernameNotFoundException(ErrorMessages.AUTHENTICATION_EXCEPTION);
+            throw new UsernameNotFoundException(ErrorMessages.DB_INTERNAL_ERROR);
         }
 
-        return dbResponse.getBody().getResponse();
+        return dbResponse.getBody();
     }
 }

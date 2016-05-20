@@ -22,6 +22,8 @@ public class CashAccount extends AbstractEntity {
     @JoinColumn(name = "owner", nullable = false)
     @JsonIgnore
     private User owner;
+    @Transient
+    private Integer ownerId;
 
     public Long getBalance() {
         return balance;
@@ -53,5 +55,18 @@ public class CashAccount extends AbstractEntity {
 
     public void setOwner(User owner) {
         this.owner = owner;
+    }
+
+    public Integer getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(Integer ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    @PostLoad
+    private void postLoadHandler() {
+        this.ownerId = this.owner.getId();
     }
 }

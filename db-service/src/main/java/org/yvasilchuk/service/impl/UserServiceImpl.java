@@ -14,15 +14,19 @@ import org.yvasilchuk.domain.model.security.FacebookCredentials;
 import org.yvasilchuk.domain.model.security.TwitterCredentials;
 import org.yvasilchuk.domain.model.security.WebCredentials;
 import org.yvasilchuk.domain.model.security.WebRegistrationDetails;
+import org.yvasilchuk.domain.model.user.UserProfile;
+import org.yvasilchuk.domain.model.user.UserSearchModel;
 import org.yvasilchuk.domain.requests.RegistrationRequest;
 import org.yvasilchuk.domain.requests.SigninRequest;
 import org.yvasilchuk.exceptions.AuthenticationException;
+import org.yvasilchuk.exceptions.EntityNotFoundException;
 import org.yvasilchuk.exceptions.InternalServerException;
 import org.yvasilchuk.exceptions.InvalidRequestException;
 import org.yvasilchuk.repository.CashAccountRepository;
 import org.yvasilchuk.repository.CashOperationCategoryRepository;
 import org.yvasilchuk.repository.UserRepository;
 import org.yvasilchuk.service.UserService;
+import org.yvasilchuk.specification.UserSpecification;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -81,6 +85,71 @@ public class UserServiceImpl implements UserService {
         }
 
         return user;
+    }
+
+    @Override
+    public List<User> find(UserSearchModel request) {
+        if (request != null && !request.isEmpty()) {
+            UserSpecification specification = new UserSpecification(request);
+            return userRepository.findAll(specification);
+        } else {
+            return userRepository.findAll();
+        }
+    }
+
+    @Override
+    public User updateUser(UserProfile request) {
+        User user = userRepository.findOne(request.getId());
+        if (user == null) {
+            throw new EntityNotFoundException(ErrorMessages.USER_NOT_FOUND);
+        }
+
+        user.setEmail(request.getEmail());
+        user.setUsername(request.getUsername());
+        user.setTwitterId(request.getTwitterId());
+        user.setFacebookId(request.getFacebookId());
+
+        user = userRepository.save(user);
+
+        return user;
+    }
+
+    @Override
+    public User patchUser(UserProfile request) {
+        User user = userRepository.findOne(request.getId());
+        if (user == null) {
+            throw new EntityNotFoundException(ErrorMessages.USER_NOT_FOUND);
+        }
+
+        if (request.getUsername() != null) {
+            user.setEmail(request.getEmail());
+        }
+        if (request.getUsername() != null) {
+            user.setUsername(request.getUsername());
+        }
+        if (request.getTwitterId() != null) {
+            user.setTwitterId(request.getTwitterId());
+        }
+        if (request.getFacebookId() != null) {
+            user.setFacebookId(request.getFacebookId());
+        }
+
+        user = userRepository.save(user);
+        return user;
+    }
+
+    @Override
+    public User get(UserSearchModel request) {
+        if (request == null || request.isEmpty()) {
+            throw new InvalidRequestException(ErrorMessages.INVALID_REQUEST);
+        }
+
+        if (request.getUsername() != null && !request.getUsername().isEmpty()) {
+            return userRepository.findByUsername(request.getUsername());
+        } else if (request.getEmail() != null && !request.getEmail().isEmpty()) {
+            return userRepository.findByEmail(request.getEmail());
+        }
+        throw new InvalidRequestException(ErrorMessages.INVALID_REQUEST);
     }
 
     private User unknownPlatformSignin(SigninRequest request) {

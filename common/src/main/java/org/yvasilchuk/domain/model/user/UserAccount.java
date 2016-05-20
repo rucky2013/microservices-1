@@ -23,13 +23,13 @@ public class UserAccount implements Serializable {
         if (u.getCategories() != null) {
             this.categories = u.getCategories()
                     .stream()
-                    .map(CashOperationCategoryModel::new)
+                    .map(c -> new CashOperationCategoryModel(c, u.getId()))
                     .collect(Collectors.toList());
         }
         if (u.getAccounts() != null) {
             this.cashAccounts = u.getAccounts()
                     .stream()
-                    .map(CashAccountModel::new)
+                    .map(ca -> new CashAccountModel(ca, u.getId()))
                     .collect(Collectors.toList());
         }
     }

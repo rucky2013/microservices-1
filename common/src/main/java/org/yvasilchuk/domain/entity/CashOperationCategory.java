@@ -15,6 +15,9 @@ public class CashOperationCategory extends AbstractEntity {
     @JoinColumn(name = "owner", nullable = false)
     @JsonIgnore
     private User owner;
+    @Transient
+    private Integer ownerId;
+
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
@@ -39,11 +42,24 @@ public class CashOperationCategory extends AbstractEntity {
         this.owner = owner;
     }
 
+    public Integer getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(Integer ownerId) {
+        this.ownerId = ownerId;
+    }
+
     public CashOperationCategoryType getType() {
         return type;
     }
 
     public void setType(CashOperationCategoryType type) {
         this.type = type;
+    }
+
+    @PostLoad
+    private void postLoadHandler() {
+        this.ownerId = this.owner.getId();
     }
 }

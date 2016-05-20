@@ -6,4 +6,6 @@ import javax.persistence.Entity;
 @Entity
 @DiscriminatorValue("basic")
 public class BasicCashOperation extends CashOperation {
+    public BasicCashOperation() {
+    }
 }
