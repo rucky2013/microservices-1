@@ -38,7 +38,7 @@ public class User extends AbstractEntity implements UserDetails {
     private String twitterId;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "owner")
-    private List<CashOperationCategory> categories;
+    private List<Category> categories;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "owner")
     private List<CashAccount> accounts;
@@ -139,11 +139,11 @@ public class User extends AbstractEntity implements UserDetails {
         this.twitterId = twitterId;
     }
 
-    public List<CashOperationCategory> getCategories() {
+    public List<Category> getCategories() {
         return categories;
     }
 
-    public void setCategories(List<CashOperationCategory> categories) {
+    public void setCategories(List<Category> categories) {
         this.categories = categories;
     }
 

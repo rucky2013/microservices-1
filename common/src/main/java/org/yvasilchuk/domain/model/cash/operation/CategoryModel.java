@@ -1,22 +1,27 @@
 package org.yvasilchuk.domain.model.cash.operation;
 
-import org.yvasilchuk.domain.entity.CashOperationCategory;
+import org.yvasilchuk.domain.entity.Category;
 import org.yvasilchuk.domain.enums.CashOperationCategoryType;
+import org.yvasilchuk.domain.messages.ValidationMessages;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
-public class CashOperationCategoryModel implements Serializable {
+public class CategoryModel implements Serializable {
     private static final long serialVersionUID = -4149079196615555494L;
 
     private Integer id;
+    @NotNull(message = ValidationMessages.CATEGORY_NAME_REQUIRED)
     private String name;
+    @NotNull(message = ValidationMessages.CATEGORY_OWNER_ID_REQUIRED)
     private Integer ownerId;
+    @NotNull(message = ValidationMessages.CATEGORY_TYPE_REQUIRED)
     private CashOperationCategoryType type;
 
-    public CashOperationCategoryModel() {
+    public CategoryModel() {
     }
 
-    public CashOperationCategoryModel(CashOperationCategory c) {
+    public CategoryModel(Category c) {
         this.id = c.getId();
         this.name = c.getName();
         if (c.getOwner() != null) {
@@ -25,7 +30,7 @@ public class CashOperationCategoryModel implements Serializable {
         this.type = c.getType();
     }
 
-    public CashOperationCategoryModel(CashOperationCategory c, Integer ownerId) {
+    public CategoryModel(Category c, Integer ownerId) {
         this.id = c.getId();
         this.name = c.getName();
         this.ownerId = ownerId;

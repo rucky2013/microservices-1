@@ -1,7 +1,7 @@
 package org.yvasilchuk.service;
 
-import org.yvasilchuk.domain.entity.CashOperationCategory;
+import org.yvasilchuk.domain.entity.Category;
 
 public interface CashOperationCategoryService {
-    CashOperationCategory getById(Integer categoryId);
+    Category getById(Integer categoryId);
 }

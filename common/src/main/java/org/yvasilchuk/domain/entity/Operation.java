@@ -1,6 +1,7 @@
 package org.yvasilchuk.domain.entity;
 
 import org.yvasilchuk.domain.enums.OperationType;
+import org.yvasilchuk.domain.model.cash.operation.OperationModel;
 
 import javax.persistence.*;
 
@@ -8,7 +9,7 @@ import javax.persistence.*;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "operation_class")
 @Table(name = "cash_operations")
-public abstract class CashOperation extends AbstractEntity {
+public abstract class Operation extends AbstractEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner", nullable = false)
     private User owner;
@@ -23,12 +24,17 @@ public abstract class CashOperation extends AbstractEntity {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id", nullable = false)
-    private CashOperationCategory category;
+    private Category category;
 
     @Column(name = "amount", nullable = false)
     private Double amount;
 
-    public CashOperation() {
+    public Operation() {
+    }
+
+    public Operation(OperationModel request) {
+        this.type = request.getType();
+        this.amount = request.getAmount();
     }
 
     public User getOwner() {
@@ -55,11 +61,11 @@ public abstract class CashOperation extends AbstractEntity {
         this.type = type;
     }
 
-    public CashOperationCategory getCategory() {
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategory(CashOperationCategory category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 

@@ -15,4 +15,22 @@ public interface ValidationMessages {
     String INVALID_NAME_LENGTH = "Name length must be lower than 512 characters.";
     String INVALID_PASSWORD_LENGTH = "Email length must be between 6 and 32 characters.";
     String INVALID_EMAIL_FORMAT = "Provided email has invalid format.";
+
+    String CASH_ACCOUNT_OWNER_ID_REQUIRED = "";
+    String CASH_ACCOUNT_CURRENCY_REQUIRED = "";
+    String CASH_ACCOUNT_NAME_REQUIRED = "";
+    String CASH_ACCOUNT_BALANCE_REQUIRED = "";
+    String CASH_ACCOUNT_ID_REQUIRED = "";
+
+    String CATEGORY_OWNER_ID_REQUIRED = "";
+    String CATEGORY_NAME_REQUIRED = "";
+    String CATEGORY_TYPE_REQUIRED = "";
+    String CATEGORY_ID_REQUIRED = "";
+
+    String OPERATION_SENDER_ACCOUNT_ID_REQUIRED = "";
+    String OPERATION_TYPE_REQUIRED = "";
+    String OPERATION_CATEGORY_ID_REQUIRED = "";
+    String OPERATION_AMOUNT_REQUIRED = "";
+    String OPERATION_RECIPIENT_ACCOUNT_ID_REQUIRED = "";
+    String OPERATION_ID_REQUIRED = "";
 }

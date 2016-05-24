@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.yvasilchuk.domain.entity.CashOperationCategory;
+import org.yvasilchuk.domain.entity.Category;
 import org.yvasilchuk.domain.messages.ErrorMessages;
 import org.yvasilchuk.service.CashOperationCategoryService;
 import org.yvasilchuk.services.DiscoveryService;
@@ -19,15 +19,15 @@ public class CashOperationCategoryServiceImpl implements CashOperationCategorySe
     DiscoveryService discoveryService;
 
     @Override
-    public CashOperationCategory getById(Integer categoryId) {
+    public Category getById(Integer categoryId) {
         String route = discoveryService.getDbServerUrl() + "/api/data/category/" + categoryId;
 
         RestTemplate template = new RestTemplate();
-        ResponseEntity<CashOperationCategory> dbResponse = template.exchange(
+        ResponseEntity<Category> dbResponse = template.exchange(
                 route,
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<CashOperationCategory>() {
+                new ParameterizedTypeReference<Category>() {
                 }
         );
 

@@ -2,16 +2,22 @@ package org.yvasilchuk.domain.model.cash.account;
 
 import org.yvasilchuk.domain.entity.CashAccount;
 import org.yvasilchuk.domain.enums.Currency;
+import org.yvasilchuk.domain.messages.ValidationMessages;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 public class CashAccountModel implements Serializable {
     private static final long serialVersionUID = -4508018399018354870L;
 
     private Integer id;
+    @NotNull(message = ValidationMessages.CASH_ACCOUNT_BALANCE_REQUIRED)
     private Long balance;
+    @NotNull(message = ValidationMessages.CASH_ACCOUNT_NAME_REQUIRED)
     private String name;
+    @NotNull(message = ValidationMessages.CASH_ACCOUNT_CURRENCY_REQUIRED)
     private Currency currency;
+    @NotNull(message = ValidationMessages.CASH_ACCOUNT_OWNER_ID_REQUIRED)
     private Integer ownerId;
 
     public CashAccountModel() {

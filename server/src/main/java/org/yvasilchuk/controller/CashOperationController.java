@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.yvasilchuk.domain.entity.CashOperation;
-import org.yvasilchuk.domain.model.cash.operation.CashOperationModel;
+import org.yvasilchuk.domain.entity.Operation;
+import org.yvasilchuk.domain.model.cash.operation.OperationModel;
 import org.yvasilchuk.domain.response.BaseResponse;
 import org.yvasilchuk.domain.response.StatusResponse;
 import org.yvasilchuk.service.CashOperationService;
@@ -22,8 +22,8 @@ public class CashOperationController {
     CashOperationService cashOperationService;
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public ResponseEntity<BaseResponse<StatusResponse>> makeCashOperation(@RequestBody CashOperationModel request) {
-        CashOperation cashOperation = cashOperationService.makeCashOperation(request);
+    public ResponseEntity<BaseResponse<StatusResponse>> makeCashOperation(@RequestBody OperationModel request) {
+        Operation operation = cashOperationService.makeCashOperation(request);
 
         StatusResponse status = new StatusResponse();
         status.setStatus("SUCCESSFUL");

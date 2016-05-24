@@ -2,7 +2,7 @@ package org.yvasilchuk.domain.model.user;
 
 import org.yvasilchuk.domain.entity.User;
 import org.yvasilchuk.domain.model.cash.account.CashAccountModel;
-import org.yvasilchuk.domain.model.cash.operation.CashOperationCategoryModel;
+import org.yvasilchuk.domain.model.cash.operation.CategoryModel;
 
 import java.io.Serializable;
 import java.util.List;
@@ -12,7 +12,7 @@ public class UserAccount implements Serializable {
     private static final long serialVersionUID = -8843456140835441695L;
 
     private UserProfile profile;
-    private List<CashOperationCategoryModel> categories;
+    private List<CategoryModel> categories;
     private List<CashAccountModel> cashAccounts;
 
     public UserAccount() {
@@ -23,7 +23,7 @@ public class UserAccount implements Serializable {
         if (u.getCategories() != null) {
             this.categories = u.getCategories()
                     .stream()
-                    .map(c -> new CashOperationCategoryModel(c, u.getId()))
+                    .map(c -> new CategoryModel(c, u.getId()))
                     .collect(Collectors.toList());
         }
         if (u.getAccounts() != null) {
@@ -42,11 +42,11 @@ public class UserAccount implements Serializable {
         this.profile = profile;
     }
 
-    public List<CashOperationCategoryModel> getCategories() {
+    public List<CategoryModel> getCategories() {
         return categories;
     }
 
-    public void setCategories(List<CashOperationCategoryModel> categories) {
+    public void setCategories(List<CategoryModel> categories) {
         this.categories = categories;
     }
 

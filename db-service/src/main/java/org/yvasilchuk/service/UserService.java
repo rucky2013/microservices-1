@@ -20,4 +20,6 @@ public interface UserService {
     User updateUser(UserProfile request);
 
     User patchUser(UserProfile request);
+
+    User get(Integer id);
 }

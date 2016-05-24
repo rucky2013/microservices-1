@@ -2,6 +2,7 @@ package org.yvasilchuk.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.yvasilchuk.domain.enums.Currency;
+import org.yvasilchuk.domain.model.cash.account.CashAccountModel;
 
 import javax.persistence.*;
 
@@ -22,8 +23,15 @@ public class CashAccount extends AbstractEntity {
     @JoinColumn(name = "owner", nullable = false)
     @JsonIgnore
     private User owner;
-    @Transient
-    private Integer ownerId;
+
+    public CashAccount() {
+    }
+
+    public CashAccount(CashAccountModel a) {
+        this.balance = a.getBalance();
+        this.name = a.getName();
+        this.currency = a.getCurrency();
+    }
 
     public Long getBalance() {
         return balance;
@@ -55,18 +63,5 @@ public class CashAccount extends AbstractEntity {
 
     public void setOwner(User owner) {
         this.owner = owner;
-    }
-
-    public Integer getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(Integer ownerId) {
-        this.ownerId = ownerId;
-    }
-
-    @PostLoad
-    private void postLoadHandler() {
-        this.ownerId = this.owner.getId();
     }
 }

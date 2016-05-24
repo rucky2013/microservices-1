@@ -2,12 +2,13 @@ package org.yvasilchuk.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.yvasilchuk.domain.enums.CashOperationCategoryType;
+import org.yvasilchuk.domain.model.cash.operation.CategoryModel;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "cash_operation_categories")
-public class CashOperationCategory extends AbstractEntity {
+public class Category extends AbstractEntity {
     @Column(name = "name", nullable = false, updatable = false)
     private String name;
 
@@ -15,15 +16,17 @@ public class CashOperationCategory extends AbstractEntity {
     @JoinColumn(name = "owner", nullable = false)
     @JsonIgnore
     private User owner;
-    @Transient
-    private Integer ownerId;
-
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
     private CashOperationCategoryType type;
 
-    public CashOperationCategory() {
+    public Category() {
+    }
+
+    public Category(CategoryModel c) {
+        this.name = c.getName();
+        this.type = c.getType();
     }
 
     public String getName() {
@@ -42,24 +45,11 @@ public class CashOperationCategory extends AbstractEntity {
         this.owner = owner;
     }
 
-    public Integer getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(Integer ownerId) {
-        this.ownerId = ownerId;
-    }
-
     public CashOperationCategoryType getType() {
         return type;
     }
 
     public void setType(CashOperationCategoryType type) {
         this.type = type;
-    }
-
-    @PostLoad
-    private void postLoadHandler() {
-        this.ownerId = this.owner.getId();
     }
 }

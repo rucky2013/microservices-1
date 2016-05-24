@@ -18,4 +18,9 @@ public interface ErrorMessages {
     String UNSUPPORTED_CASH_OPERATION = "Cash operation type not supported.";
     String ACCESS_DENIED = "Access denied.";
     String USER_NOT_FOUND = "User not found.";
+    String CATEGORY_NOT_FOUND = "";
+    String CASH_ACCOUNT_NOT_FOUND = "";
+    String CASH_ACCOUNT_SENDER_NOT_FOUND = "";
+    String CASH_ACCOUNT_RECIPIENT_NOT_FOUND = "";
+    String OPERATION_NOT_FOUND = "";
 }

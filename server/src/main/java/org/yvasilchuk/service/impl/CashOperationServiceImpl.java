@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.yvasilchuk.domain.entity.*;
 import org.yvasilchuk.domain.messages.ErrorMessages;
-import org.yvasilchuk.domain.model.cash.operation.CashOperationModel;
+import org.yvasilchuk.domain.model.cash.operation.OperationModel;
 import org.yvasilchuk.domain.response.BaseResponse;
 import org.yvasilchuk.exceptions.AuthenticationException;
 import org.yvasilchuk.exceptions.DatabaseException;
@@ -38,40 +38,40 @@ public class CashOperationServiceImpl implements CashOperationService {
     UserService userService;
 
     @Override
-    public CashOperation makeCashOperation(CashOperationModel request) {
-        CashOperationCategory category = categoryService.getById(request.getCategoryId());
+    public Operation makeCashOperation(OperationModel request) {
+        Category category = categoryService.getById(request.getCategoryId());
         CashAccount account = accountService.getById(request.getSenderAccountId());
         User user = userService.getLoggedInUser();
 
         checkCashOperationCategoryPermissions(user, category);
         checkCashAccountPermissions(user, account);
 
-        CashOperation operation = sendCashOperationToDb(request, user, account, category);
+        Operation operation = sendCashOperationToDb(request, user, account, category);
 
         return operation;
     }
 
-    private CashOperation sendCashOperationToDb(CashOperationModel request, User user, CashAccount account, CashOperationCategory category) {
-        CashOperation cashOperation;
+    private Operation sendCashOperationToDb(OperationModel request, User user, CashAccount account, Category category) {
+        Operation operation;
         switch (request.getType()) {
             case ADD:
             case SUBTRACT:
-                cashOperation = sendBasicCashOperationToDb(request, user, account, category);
+                operation = sendBasicCashOperationToDb(request, user, account, category);
                 break;
             case TRANSFER:
                 CashAccount recipient = accountService.getById(request.getRecipientAccountId());
                 checkCashAccountPermissions(user, recipient);
-                cashOperation = sendTransferCashOperationToDb(request, user, account, recipient, category);
+                operation = sendTransferCashOperationToDb(request, user, account, recipient, category);
                 break;
             default:
                 throw new InvalidRequestException(ErrorMessages.UNSUPPORTED_CASH_OPERATION);
         }
 
-        return cashOperation;
+        return operation;
     }
 
-    private CashOperation sendTransferCashOperationToDb(CashOperationModel request, User user, CashAccount sender, CashAccount recipient, CashOperationCategory category) {
-        TransferCashOperation operation = new TransferCashOperation();
+    private Operation sendTransferCashOperationToDb(OperationModel request, User user, CashAccount sender, CashAccount recipient, Category category) {
+        TransferOperation operation = new TransferOperation();
 
         operation.setOwner(user);
         operation.setCategory(category);
@@ -85,13 +85,13 @@ public class CashOperationServiceImpl implements CashOperationService {
 
         String route = discoveryService.getDbServerUrl() + "/api/data/transfer-operation";
 
-        HttpEntity<TransferCashOperation> requestEntity = new HttpEntity<>(operation);
+        HttpEntity<TransferOperation> requestEntity = new HttpEntity<>(operation);
 
-        ResponseEntity<BaseResponse<CashOperation>> dbResponse = template.exchange(
+        ResponseEntity<BaseResponse<Operation>> dbResponse = template.exchange(
                 route,
                 HttpMethod.POST,
                 requestEntity,
-                new ParameterizedTypeReference<BaseResponse<CashOperation>>() {
+                new ParameterizedTypeReference<BaseResponse<Operation>>() {
                 });
 
         HttpStatus dbResponseStatusCode = dbResponse.getStatusCode();
@@ -106,8 +106,8 @@ public class CashOperationServiceImpl implements CashOperationService {
         return operation;
     }
 
-    private CashOperation sendBasicCashOperationToDb(CashOperationModel request, User user, CashAccount account, CashOperationCategory category) {
-        BasicCashOperation operation = new BasicCashOperation();
+    private Operation sendBasicCashOperationToDb(OperationModel request, User user, CashAccount account, Category category) {
+        BasicOperation operation = new BasicOperation();
 
         operation.setOwner(user);
         operation.setCategory(category);
@@ -120,13 +120,13 @@ public class CashOperationServiceImpl implements CashOperationService {
 
         String route = discoveryService.getDbServerUrl() + "/api/data/basic-operation";
 
-        HttpEntity<BasicCashOperation> requestEntity = new HttpEntity<>(operation);
+        HttpEntity<BasicOperation> requestEntity = new HttpEntity<>(operation);
 
-        ResponseEntity<BaseResponse<CashOperation>> dbResponse = template.exchange(
+        ResponseEntity<BaseResponse<Operation>> dbResponse = template.exchange(
                 route,
                 HttpMethod.POST,
                 requestEntity,
-                new ParameterizedTypeReference<BaseResponse<CashOperation>>() {
+                new ParameterizedTypeReference<BaseResponse<Operation>>() {
                 });
 
         HttpStatus dbResponseStatusCode = dbResponse.getStatusCode();
@@ -141,18 +141,18 @@ public class CashOperationServiceImpl implements CashOperationService {
         return operation;
     }
 
-//    private void checkPermissions(CashOperationModel request) {
+//    private void checkPermissions(OperationModel request) {
 //        User user = userService.getLoggedInUser();
 //        checkCashAccountPermissions(request.getSenderAccountId(), user);
 //        checkCashOperationCategoryPermissions(request.getCategoryId(), user);
 //    }
 
 //    private void checkCashOperationCategoryPermissions(Integer categoryId, User user) {
-//        CashOperationCategory category = categoryService.getById(categoryId);
+//        Category category = categoryService.getById(categoryId);
 //        checkCashOperationCategoryPermissions(user, category);
 //    }
 
-    private void checkCashOperationCategoryPermissions(User user, CashOperationCategory category) {
+    private void checkCashOperationCategoryPermissions(User user, Category category) {
         if (!category.getOwnerId().equals(user.getId())) {
             throw new AuthenticationException(ErrorMessages.ACCESS_DENIED);
         }

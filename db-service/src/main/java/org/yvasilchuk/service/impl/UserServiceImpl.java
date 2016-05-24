@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.yvasilchuk.domain.entity.CashAccount;
-import org.yvasilchuk.domain.entity.CashOperationCategory;
+import org.yvasilchuk.domain.entity.Category;
 import org.yvasilchuk.domain.entity.User;
 import org.yvasilchuk.domain.enums.CashOperationCategoryType;
 import org.yvasilchuk.domain.enums.Currency;
@@ -23,7 +23,7 @@ import org.yvasilchuk.exceptions.EntityNotFoundException;
 import org.yvasilchuk.exceptions.InternalServerException;
 import org.yvasilchuk.exceptions.InvalidRequestException;
 import org.yvasilchuk.repository.CashAccountRepository;
-import org.yvasilchuk.repository.CashOperationCategoryRepository;
+import org.yvasilchuk.repository.CategoryRepository;
 import org.yvasilchuk.repository.UserRepository;
 import org.yvasilchuk.service.UserService;
 import org.yvasilchuk.specification.UserSpecification;
@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     CashAccountRepository cashAccountRepository;
     @Autowired
-    CashOperationCategoryRepository categoryRepository;
+    CategoryRepository categoryRepository;
 
     @Value("${security.password.salt:f7f5e5f4sws5e4f3fHGhhH$h}")
     private String PASSWORD_SALT;
@@ -139,6 +139,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User get(Integer id) {
+        return userRepository.findOne(id);
+    }
+
+    @Override
     public User get(UserSearchModel request) {
         if (request == null || request.isEmpty()) {
             throw new InvalidRequestException(ErrorMessages.INVALID_REQUEST);
@@ -225,21 +230,21 @@ public class UserServiceImpl implements UserService {
     }
 
     private void generateDefaultCategoriesForNewUser(User user) {//TODO: make default categories configurable
-        List<CashOperationCategory> categories = new ArrayList<>();
+        List<Category> categories = new ArrayList<>();
 
-        CashOperationCategory c = new CashOperationCategory();
+        Category c = new Category();
         c.setOwner(user);
         c.setName("Salary");
         c.setType(CashOperationCategoryType.INCOME);
         categories.add(c);
 
-        c = new CashOperationCategory();
+        c = new Category();
         c.setOwner(user);
         c.setName("Cigarettes");
         c.setType(CashOperationCategoryType.EXPENSE);
         categories.add(c);
 
-        c = new CashOperationCategory();
+        c = new Category();
         c.setOwner(user);
         c.setName("Alcohol");
         c.setType(CashOperationCategoryType.EXPENSE);
